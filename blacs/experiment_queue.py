@@ -21,6 +21,7 @@ import shutil
 from collections import defaultdict
 from tempfile import gettempdir
 from binascii import hexlify
+import pprint
 
 from qtutils.qt.QtCore import *
 from qtutils.qt.QtGui import *
@@ -916,10 +917,23 @@ class QueueManager(object):
                 # Raise the error in a thread for visibility
                 zprocess.raise_exception_in_thread(sys.exc_info())
                 
-            if error_condition:                
+            if error_condition:
+                # Jeff's weird hack for ni missing triggers - still need to figure out why this is happening...
+                fails = [k for k, v in response_list.items() if v=='fail']
+                restartSuccess = False
+                for fail in fails:
+                    try:
+                        logger.debug(fail + " failed to transition to manual.")
+                        if fail=='ni_0' and fails==['ni_0']:
+                            logger.debug("Attempting restart...")
+                            tab = devices_in_use[fail]
+                            tab._ui.button_restart.click()
+                            restartSuccess = True
+                            logger.debug("Restart successul")
+                    except Exception as error:
+                        print("An exception occurred: ", error)
+                
                 # clean up the h5 file
-                for response in response_list:
-                    print(response[name])
                 self.manager_paused = True
                 # is this a repeat?
                 with h5py.File(path, 'r') as h5_file:
@@ -938,6 +952,9 @@ class QueueManager(object):
                     path = path.replace('.h5','_retry.h5')
                 # Put it back at the start of the queue:
                 self.prepend(path)
+
+                if restartSuccess:
+                    self.manager_paused = False
                 
                 continue
             
