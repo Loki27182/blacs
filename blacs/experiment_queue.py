@@ -912,12 +912,14 @@ class QueueManager(object):
                 error_condition = True
                 logger.exception("Error in queue manager execution. Queue paused.")
                 self.set_status("Error in queue manager\nQueue paused")
-
+                
                 # Raise the error in a thread for visibility
                 zprocess.raise_exception_in_thread(sys.exc_info())
                 
             if error_condition:                
                 # clean up the h5 file
+                for response in response_list:
+                    print(response[name])
                 self.manager_paused = True
                 # is this a repeat?
                 with h5py.File(path, 'r') as h5_file:
