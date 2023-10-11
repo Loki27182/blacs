@@ -42,6 +42,7 @@ from qtutils.qt.QtCore import *
 from qtutils.qt.QtGui import *
 from qtutils.qt.QtWidgets import *
 from qtutils.qt import QT_ENV
+#import logging
 
 
 splash.update_text("importing zmq and zprocess")
