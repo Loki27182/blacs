@@ -935,7 +935,7 @@ class QueueManager(object):
                     except Exception as error:
                         print("An exception occurred: ", error)
             
-                 clean up the h5 file
+                # clean up the h5 file
                 self.manager_paused = True
                 # is this a repeat?
                 with h5py.File(path, 'r') as h5_file:
