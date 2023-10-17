@@ -925,13 +925,20 @@ class QueueManager(object):
                     try:
                         logger.debug(fail + " failed to transition to manual.")
                         if fail=='ni_0' and fails==['ni_0']:
-                            logger.debug("Attempting restart...")
-                            tab = devices_in_use[fail]
-                            #time.sleep(.2)
-                            tab._ui.button_restart.click()
-                            #time.sleep(.2)
-                            restartSuccess = True
-                            logger.debug('Restart successful' + '<b>%s</b>'% str(os.path.basename(path)).removesuffix('_retry.h5'))
+                            restart_attempts = 0
+                            while not restartSuccess:
+                                try:
+                                    logger.debug("Attempting restart...")
+                                    tab = devices_in_use[fail]
+                                    time.sleep(.2)
+                                    tab._ui.button_restart.click()
+                                    time.sleep(.2)
+                                    restartSuccess = True
+                                    logger.debug('Restart successful' + '<b>%s</b>'% str(os.path.basename(path)).removesuffix('_retry.h5'))
+                                except Exception as error:
+                                    logger.debug("Attempting failed")
+                                    if restart_attempts > 9:
+                                        raise error
                     except Exception as error:
                         print("An exception occurred: ", error)
             

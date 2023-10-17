@@ -62,6 +62,7 @@ from labscript_utils.ls_zprocess import ProcessTree, ZMQServer
 from labscript_utils.setup_logging import setup_logging
 import labscript_utils.shared_drive
 import blacs
+import logging
 
 
 process_tree = ProcessTree.instance()
@@ -69,7 +70,7 @@ process_tree.zlock_client.set_process_name('BLACS')
 
 
 # Setup logging
-logger = setup_logging('BLACS')
+logger = setup_logging('BLACS',log_level=logging.INFO)
 labscript_utils.excepthook.set_logger(logger)
 
 logger.info(f'Python version {sys.version}')
