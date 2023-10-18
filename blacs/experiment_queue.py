@@ -872,7 +872,7 @@ class QueueManager(object):
                             error_condition = True
                     # Wait for their responses:
                     while transition_list:
-                        logger.info('Waiting for the following devices to finish transitioning to manual mode: %s'%str(transition_list))
+                        logger.debug('Waiting for the following devices to finish transitioning to manual mode: %s'%str(transition_list))
                         try:
                             name, result = self.current_queue.get(2)
                             if name == 'Queue Manager' and result == 'abort':
@@ -923,21 +923,22 @@ class QueueManager(object):
                 restartSuccess = False
                 for fail in fails:
                     try:
-                        logger.debug(fail + " failed to transition to manual.")
+                        logger.info(fail + " failed to transition to manual.")
                         if fail=='ni_0' and fails==['ni_0']:
                             restart_attempts = 0
                             while not restartSuccess:
                                 try:
-                                    logger.debug("Attempting restart...")
+                                    logger.info("Attempting restart...")
                                     tab = devices_in_use[fail]
-                                    time.sleep(.2)
                                     tab._ui.button_restart.click()
-                                    time.sleep(.2)
                                     restartSuccess = True
-                                    logger.debug('Restart successful' + '<b>%s</b>'% str(os.path.basename(path)).removesuffix('_retry.h5'))
+                                    logger.info('Restart successful' + '<b>%s</b>'% str(os.path.basename(path)).removesuffix('_retry.h5'))
                                 except Exception as error:
-                                    logger.debug("Attempting failed")
+                                    logger.info("Attempt failed")
+                                    time.sleep(.2)
+                                    restart_attempts+=1
                                     if restart_attempts > 9:
+                                        logger.info("Too many failed attempts...giving up")
                                         raise error
                     except Exception as error:
                         print("An exception occurred: ", error)
