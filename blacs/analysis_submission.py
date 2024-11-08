@@ -218,7 +218,7 @@ class AnalysisSubmission(object):
                 else:
                     raise ValueError('Invalid signal: %s'%str(signal))
 
-                self._mainloop_logger.debug('Processed signal: %s'%str(signal))
+                #self._mainloop_logger.debug('Processed signal: %s'%str(signal))
             except Exception:
                 # Raise in a thread for visibility, but keep going
                 raise_exception_in_thread(sys.exc_info())

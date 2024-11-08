@@ -919,29 +919,29 @@ class QueueManager(object):
                 
             if error_condition:
                 ## Jeff's weird hack for ni missing triggers - This was fixed, but if it needs to be re-implemented, uncomment this block
-                #fails = [k for k, v in response_list.items() if v=='fail']
-                #restartSuccess = False
-                #for fail in fails:
-                #    try:
-                #        logger.info(fail + " failed to transition to manual.")
-                #        if fail=='ni_0' and fails==['ni_0']:
-                #            restart_attempts = 0
-                #            while not restartSuccess:
-                #                try:
-                #                    logger.info("Attempting restart...")
-                #                    tab = devices_in_use[fail]
-                #                    tab._ui.button_restart.click()
-                #                    restartSuccess = True
-                #                    logger.info('Restart successful' + '<b>%s</b>'% str(os.path.basename(path)).removesuffix('_retry.h5'))
-                #                except Exception as error:
-                #                    logger.info("Attempt failed")
-                #                    time.sleep(.2)
-                #                    restart_attempts+=1
-                #                    if restart_attempts > 9:
-                #                        logger.info("Too many failed attempts...giving up")
-                #                        raise error
-                #    except Exception as error:
-                #        print("An exception occurred: ", error)
+                fails = [k for k, v in response_list.items() if v=='fail']
+                restartSuccess = False
+                for fail in fails:
+                    try:
+                        logger.info(fail + " failed to transition to manual.")
+                        if fail=='ni_2' and fails==['ni_0']:
+                            restart_attempts = 0
+                            while not restartSuccess:
+                                try:
+                                    logger.info("Attempting restart...")
+                                    tab = devices_in_use[fail]
+                                    tab._ui.button_restart.click()
+                                    restartSuccess = True
+                                    logger.info('Restart successful' + '<b>%s</b>'% str(os.path.basename(path)).removesuffix('_retry.h5'))
+                                except Exception as error:
+                                    logger.info("Attempt failed")
+                                    time.sleep(.2)
+                                    restart_attempts+=1
+                                    if restart_attempts > 9:
+                                        logger.info("Too many failed attempts...giving up")
+                                        raise error
+                    except Exception as error:
+                        print("An exception occurred: ", error)
             
                 # clean up the h5 file
                 self.manager_paused = True
@@ -963,8 +963,8 @@ class QueueManager(object):
                 # Put it back at the start of the queue:
                 self.prepend(path)
 
-                if restartSuccess:
-                    self.manager_paused = False
+                #if restartSuccess:
+                #    self.manager_paused = False
                 
                 continue
             

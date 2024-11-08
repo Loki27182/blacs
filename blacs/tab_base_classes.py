@@ -768,14 +768,14 @@ class Tab(object):
         try:
             while True:
                 # Get the next task from the event queue:
-                logger.debug('Waiting for next event')
+                #logger.debug('Waiting for next event')
                 func, data = event_queue.get(self.mode)
                 if func == '_quit':
                     # The user has requested a restart:
                     logger.debug('Received quit signal')
                     break
                 args,kwargs = data
-                logger.debug('Processing event %s' % func.__name__)
+                #logger.debug('Processing event %s' % func.__name__)
                 self.state = '%s (GUI)'%func.__name__
                 # Run the task with the GUI lock, catching any exceptions:
                 #func = getattr(self,funcname)
@@ -790,7 +790,7 @@ class Tab(object):
                     # Continue until we get a StopIteration exception, or the user requests a restart
                     while generator_running:
                         try:
-                            logger.debug('Instructing worker %s to do job %s'%(worker_process,worker_function) )
+                            #logger.debug('Instructing worker %s to do job %s'%(worker_process,worker_function) )
                             if worker_function == 'init':
                                 # Start the worker process before running its init() method:
                                 self.state = '%s (%s)'%('Starting worker process', worker_process)
@@ -812,13 +812,13 @@ class Tab(object):
                             to_worker.put(worker_arg_list)
                             self.state = '%s (%s)'%(worker_function,worker_process)
                             # Confirm that the worker got the message:
-                            logger.debug('Waiting for worker to acknowledge job request')
+                            #logger.debug('Waiting for worker to acknowledge job request')
                             success, message, results = from_worker.get()
                             if not success:
                                 logger.info('Worker reported failure to start job')
                                 raise Exception(message)
                             # Wait for and get the results of the work:
-                            logger.debug('Worker reported job started, waiting for completion')
+                            #logger.debug('Worker reported job started, waiting for completion')
                             success,message,results = from_worker.get()
                             if not success:
                                 logger.info('Worker reported exception during job')
@@ -826,13 +826,13 @@ class Tab(object):
                                 self.error_message += ('Exception in worker - %s:<br />' % now +
                                                '<FONT COLOR=\'#ff0000\'>%s</FONT><br />'%escape(message).replace(' ','&nbsp;').replace('\n','<br />'))
                             else:
-                                logger.debug('Job completed')
+                                pass# logger.debug('Job completed')
                             
                             # Reset the hide_not_responding_error_until, since we have now heard from the child                        
                             self.hide_not_responding_error_until = 0
                                 
                             # Send the results back to the GUI function
-                            logger.debug('returning worker results to function %s' % func.__name__)
+                            #logger.debug('returning worker results to function %s' % func.__name__)
                             self.state = '%s (GUI)'%func.__name__
                             next_yield = inmain(generator.send,results) 
                             # If there is another yield command, put the data in the required variables for the next loop iteration
@@ -840,7 +840,7 @@ class Tab(object):
                                 worker_process,worker_function,worker_args,worker_kwargs = next_yield
                         except StopIteration:
                             # The generator has finished. Ignore the error, but stop the loop
-                            logger.debug('Finalising function')
+                            #logger.debug('Finalising function')
                             generator_running = False
                 self.state = 'idle'
         except Interrupted:
