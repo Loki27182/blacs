@@ -70,7 +70,7 @@ process_tree.zlock_client.set_process_name('BLACS')
 
 
 # Setup logging
-logger = setup_logging('BLACS',log_level=logging.INFO)
+logger = setup_logging('BLACS',log_level=logging.DEBUG)
 labscript_utils.excepthook.set_logger(logger)
 
 logger.info(f'Python version {sys.version}')
